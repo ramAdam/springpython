@@ -13,7 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from _config_base import *
-from _xml_config import *
-from _yaml_config import *
-from _python_config import *
+from __future__ import absolute_import
+from ._config_base import *
+from ._xml_config import *
+from ._yaml_config import *
+from ._python_config import *

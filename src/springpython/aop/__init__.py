@@ -56,7 +56,7 @@ class MethodInvocation(object):
 
     def proceed(self):
         """This is the method every interceptor should call in order to continue down the chain of interceptors."""
-        interceptor = self.iterator.next()
+        interceptor = next(self.iterator)
         self.logger.debug("Calling %s.%s(%s, %s)" % (interceptor.__class__.__name__, self.method_name, self.args, self.kwargs))
         return interceptor.invoke(self)
 
@@ -218,7 +218,7 @@ class ProxyFactory(object):
         return AopProxy(self.target, self.interceptors)
 
     def __setattr__(self, name, value):
-        if name == "target" and type(value) == types.StringType:
+        if name == "target" and type(value) == bytes:
             value = utils.getClass(value)()
         elif name == "interceptors" and not isinstance(value, list):
             value = [value]

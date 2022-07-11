@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.       
 """
+from __future__ import print_function
 
 import re
 
@@ -484,7 +485,7 @@ class HistoryPage(Page):
     
 
     def generateHistory(self):
-        print self.history
+        print(self.history)
         results = """
             <p>
                 Diff selection: mark the radio boxes of the versions to compare and hit enter or the button at the bottom.<br/>

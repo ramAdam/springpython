@@ -71,13 +71,13 @@ class DatabaseTemplate(object):
                     cursor.execute(sql_statement)
                     rows_affected = cursor.rowcount
                     lastrowid = cursor.lastrowid
-            except Exception, e:
+            except Exception as e:
                 self.logger.debug("execute.execute: Trapped %s while trying to execute '%s'" % (e, sql_statement))
                 error = e
         finally:
             try:
                 cursor.close()
-            except Exception, e:
+            except Exception as e:
                 self.logger.debug("execute.close: Trapped %s, and throwing away." % e)
             
         if error:
@@ -131,13 +131,13 @@ class DatabaseTemplate(object):
                     cursor.execute(sql_query)
                 results = cursor.fetchall()
                 metadata = [{"name":row[0], "type_code":row[1], "display_size":row[2], "internal_size":row[3], "precision":row[4], "scale":row[5], "null_ok":row[6]} for row in cursor.description]
-            except Exception, e:
+            except Exception as e:
                 self.logger.debug("query_for_list.execute: Trapped %s while trying to execute '%s'" % (e, sql_query))
                 error = e
         finally:
             try:
                 cursor.close()
-            except Exception, e:
+            except Exception as e:
                 self.logger.debug("query_for_list.close: Trapped %s, and throwing away." % e)
 
         if error:
@@ -149,12 +149,12 @@ class DatabaseTemplate(object):
     def query_for_int(self, sql_query, args = None):
         """Execute a query that results in an int value, given static SQL. If args is provided, bind the arguments 
         (to avoid SQL injection attacks)."""
-        return self.query_for_object(sql_query, args, types.IntType)
+        return self.query_for_object(sql_query, args, int)
     
     def query_for_long(self, sql_query, args = None):
         """Execute a query that results in an int value, given static SQL. If args is provided, bind the arguments 
         (to avoid SQL injection attacks)."""
-        return self.query_for_object(sql_query, args, types.LongType)
+        return self.query_for_object(sql_query, args, int)
     
     def query_for_object(self, sql_query, args = None, required_type = None):
         """Execute a query that results in an int value, given static SQL. If args is provided, bind the arguments 
@@ -175,7 +175,7 @@ class DatabaseTemplate(object):
             raise IncorrectResultSizeDataAccessException("Instead of getting one column, this query returned %s" % len(results[0]))
 
         equivalentTypes = [
-                           [types.UnicodeType, types.StringType]
+                           [str, bytes]
                            ]
         if type(results[0][0]) != required_type:
             foundEquivType = False

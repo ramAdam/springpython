@@ -81,10 +81,10 @@ class FilterTestCase(MockTestCase):
         filterChain.addFilter(filterSecurityInterceptor)
         
         chain = filterChain.getFilterChain()
-        self.assertEquals(httpSessionContextIntegrationFilter, chain.next())
-        self.assertEquals(exceptionTranslationFilter, chain.next())
-        self.assertEquals(authenticationProcessFilter, chain.next())
-        self.assertEquals(filterSecurityInterceptor, chain.next())
+        self.assertEquals(httpSessionContextIntegrationFilter, next(chain))
+        self.assertEquals(exceptionTranslationFilter, next(chain))
+        self.assertEquals(authenticationProcessFilter, next(chain))
+        self.assertEquals(filterSecurityInterceptor, next(chain))
         self.assertRaises(StopIteration, chain.next)
 
     def testHttpSessionContextIntegrationFilter(self):

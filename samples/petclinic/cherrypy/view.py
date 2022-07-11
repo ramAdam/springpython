@@ -383,7 +383,7 @@ class PetClinicView(object):
             try:
                 self.attemptAuthentication(login, password)
                 return [self.redirectStrategy.redirect(fromPage)]
-            except AuthenticationException, e:
+            except AuthenticationException as e:
                 return [self.redirectStrategy.redirect("?login=%s&errorMsg=Username/password failure" % login)]
 
         results = header() + """

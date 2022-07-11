@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.       
 """
+from __future__ import print_function
 import logging
 import os
 import subprocess
@@ -61,14 +62,14 @@ class AbstractTransactionTestCase(unittest.TestCase):
         rows = self.dt.execute("INSERT INTO animal (name) VALUES (?)", ('black mamba',))
         self.assertEquals(rows, 1)
 
-        name = self.dt.query_for_object("SELECT name FROM animal WHERE name = 'black mamba'", required_type=types.StringType)
+        name = self.dt.query_for_object("SELECT name FROM animal WHERE name = 'black mamba'", required_type=bytes)
         self.assertEquals(name, "black mamba")
 
     def testInsertingRowsIntoTheDatabaseWithInsertApi(self):
         id = self.dt.insert_and_return_id("INSERT INTO animal (name) VALUES (?)", ('black mamba',))
         self.assertEquals(id, 1)
 
-        name = self.dt.query_for_object("SELECT name FROM animal WHERE name = 'black mamba'", required_type=types.StringType)
+        name = self.dt.query_for_object("SELECT name FROM animal WHERE name = 'black mamba'", required_type=bytes)
         self.assertEquals(name, "black mamba")
 
     def testInsertingTwoRowsWithoutaTransactionButManuallyCommitted(self):
@@ -108,7 +109,7 @@ class AbstractTransactionTestCase(unittest.TestCase):
             def do_in_transaction(s, status):
                 self.dt.execute("INSERT INTO animal (name) VALUES (?)", ('black mamba',))
                 self.dt.execute("INSERT INTO animal (name) VALUES (?)", ('copperhead',))
-                results = self.dt.query_for_object("SELECT name FROM animal WHERE name like 'c%'", required_type=types.StringType)
+                results = self.dt.query_for_object("SELECT name FROM animal WHERE name like 'c%'", required_type=bytes)
                 return results
                 
         self.assertEquals(self.transactionTemplate.execute(txDefinition()), "copperhead")
@@ -417,7 +418,7 @@ class MySQLTransactionTestCase(AbstractTransactionTestCase):
             """)
             self.factory.commit()
 
-        except Exception, e:
+        except Exception as e:
             print("""
                 !!! Can't run MySQLDatabaseTemplateTestCase !!!
 
@@ -464,7 +465,7 @@ class PostGreSQLTransactionTestCase(AbstractTransactionTestCase):
             """)
             self.factory.commit()
 
-        except Exception, e:
+        except Exception as e:
             print("""
                 !!! Can't run PostGreSQLTransactionTestCase !!!
 
@@ -499,7 +500,7 @@ class SqliteTransactionTestCase(AbstractTransactionTestCase):
         try:
             try:
                 os.remove(self.db_filename)
-            except OSError, e:
+            except OSError as e:
                 pass
             
             self.factory = factory.Sqlite3ConnectionFactory(self.db_filename)
@@ -523,11 +524,11 @@ class SqliteTransactionTestCase(AbstractTransactionTestCase):
             """)
             self.factory.commit()
 
-        except Exception, e:
-            print e.message
-            print e.args
-            print type(e)
-            print dir(e)
+        except Exception as e:
+            print(e.message)
+            print(e.args)
+            print(type(e))
+            print(dir(e))
             print("""
                 !!! Can't run SqliteTransactionTestCase !!!
 
@@ -571,7 +572,7 @@ class SQLServerTransactionTestCase(AbstractTransactionTestCase):
             
             self.factory.commit()
 
-        except Exception, e:
+        except Exception as e:
             print("""
                 !!! Can't run SQLServerDatabaseTemplateTestCase !!!
 

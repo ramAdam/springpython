@@ -181,7 +181,7 @@ class PetClinicController(DaoSupport):
                 SELECT username
                 FROM owners
                 WHERE id = ?
-            """, (id,), types.StringType)
+            """, (id,), bytes)
     
     def getUsers(self):
         """

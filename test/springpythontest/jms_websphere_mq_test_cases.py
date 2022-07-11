@@ -1104,14 +1104,14 @@ class WebSphereMQTestCase(MockTestCase):
 
         try:
             raise WebSphereMQJMSException()
-        except WebSphereMQJMSException, e:
+        except WebSphereMQJMSException as e:
             self.assertEquals(e.completion_code, None)
             self.assertEquals(e.reason_code, None)
             self.assertEquals(e.message, None)
 
         try:
             raise WebSphereMQJMSException(message)
-        except WebSphereMQJMSException, e:
+        except WebSphereMQJMSException as e:
             self.assertEquals(e.completion_code, None)
             self.assertEquals(e.reason_code, None)
             self.assertEquals(e.message, message)
@@ -1120,7 +1120,7 @@ class WebSphereMQTestCase(MockTestCase):
 
         try:
             raise WebSphereMQJMSException(completion_code=mq_exception.comp, reason_code=mq_exception.reason)
-        except WebSphereMQJMSException, e:
+        except WebSphereMQJMSException as e:
             self.assertEquals(e.completion_code, expected_completion_code)
             self.assertEquals(e.reason_code, expected_reason_code)
 
@@ -1250,7 +1250,7 @@ class WebSphereMQTestCase(MockTestCase):
         _globals = {}
         _locals = {}
 
-        exec "from springpython.jms.factory import *" in _globals, _locals
+        exec("from springpython.jms.factory import *", _globals, _locals)
 
         self.assertEquals(1, len(_locals.keys()))
         self.assertEquals("WebSphereMQConnectionFactory", _locals.keys()[0])
@@ -1459,7 +1459,7 @@ class WebSphereMQTestCase(MockTestCase):
 
         try:
             listener.run()
-        except WebSphereMQJMSException, e:
+        except WebSphereMQJMSException as e:
             sleep(0.1) # Allows the handler thread to process the message
             self.assertEquals(e.message, exception_reason)
             self.assertEquals(3, factory.call_count)
@@ -1474,7 +1474,7 @@ class WebSphereMQTestCase(MockTestCase):
 
         try:
             handler.handle("foo")
-        except NotImplementedError, e:
+        except NotImplementedError as e:
             self.assertEquals(e.message, "Should be overridden by subclasses.")
 
     def testSSLCorrectSettings(self):
@@ -1517,7 +1517,7 @@ class WebSphereMQTestCase(MockTestCase):
         self.assertRaises(JMSException, factory._connect)
         try:
             factory._connect()
-        except JMSException, e:
+        except JMSException as e:
             self.assertEquals(e.args[0], "SSL support requires setting both ssl_cipher_spec and ssl_key_repository")
 
         # ssl=True and ssl_cipher_spec only.
@@ -1526,7 +1526,7 @@ class WebSphereMQTestCase(MockTestCase):
         self.assertRaises(JMSException, factory._connect)
         try:
             factory._connect()
-        except JMSException, e:
+        except JMSException as e:
             self.assertEquals(e.args[0], "SSL support requires setting both ssl_cipher_spec and ssl_key_repository")
 
         # ssl=True and ssl_key_repository only.
@@ -1535,7 +1535,7 @@ class WebSphereMQTestCase(MockTestCase):
         self.assertRaises(JMSException, factory._connect)
         try:
             factory._connect()
-        except JMSException, e:
+        except JMSException as e:
             self.assertEquals(e.args[0], "SSL support requires setting both ssl_cipher_spec and ssl_key_repository")
 
         # ssl_cipher_spec only, ssl=False.
@@ -1666,7 +1666,7 @@ class WebSphereMQTestCase(MockTestCase):
 
         try:
             listener.run()
-        except WebSphereMQJMSException, e:
+        except WebSphereMQJMSException as e:
             sleep(0.5) # Allows the handler thread to process the message
             self.assertEquals(e.message, exception_reason)
             self.assertEquals(3, factory.call_count)
@@ -1681,7 +1681,7 @@ class WebSphereMQTestCase(MockTestCase):
 
         try:
             handler.handle("foo")
-        except NotImplementedError, e:
+        except NotImplementedError as e:
             self.assertEquals(e.message, "Should be overridden by subclasses.")
 
     def testNeedsMCD(self):

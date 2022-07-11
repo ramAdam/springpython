@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.       
 """
+from future.utils import raise_
 import logging
 import Pyro.core
 from springpython.context import InitializingObject
@@ -79,7 +80,7 @@ class PyroProxyFactory(object):
         if name in ["service_url"]:
             return self.__dict__[name]
         elif name in ["post_process_before_initialization", "post_process_after_initialization"]:
-            raise AttributeError, name
+            raise_(AttributeError, name)
         else:
             if self.client_proxy is None:
                 self.__dict__["client_proxy"] = Pyro.core.getProxyForURI(self.service_url)
@@ -165,7 +166,7 @@ class Pyro4ProxyFactory(object):
         if name in ["service_url"]:
             return self.__dict__[name]
         elif name in ["post_process_before_initialization", "post_process_after_initialization"]:
-            raise AttributeError, name
+            raise_(AttributeError, name)
         else:
             if self.client_proxy is None:
                 self.__dict__["client_proxy"] = Pyro4.Proxy(self.service_url)

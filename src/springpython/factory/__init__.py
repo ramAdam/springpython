@@ -49,12 +49,12 @@ class PythonObjectFactory(ObjectFactory):
         self.wrapper = wrapper
 
     def create_object(self, constr, named_constr):
-        self.logger.debug("Creating an instance of %s" % self.method.func_name)
+        self.logger.debug("Creating an instance of %s" % self.method.__name__)
         
         # Setting wrapper's top_func can NOT be done earlier than this method call,
         # because it is tied to a wrapper decorator, which may not have yet been
         # generated.
-        self.wrapper.func_globals["top_func"] = self.method.func_name
+        self.wrapper.__globals__["top_func"] = self.method.__name__
         
         # Because @object-based objects use direct code to specify arguments, and NOT
         # external configuration data, this factory doesn't care about the incoming arguments.

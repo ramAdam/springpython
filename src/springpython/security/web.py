@@ -36,7 +36,7 @@ class Filter(object):
     def doNextFilter(self, environ, start_response):
         results = None
         try:
-            nextFilter = environ["SPRINGPYTHON_FILTER_CHAIN"].next()
+            nextFilter = next(environ["SPRINGPYTHON_FILTER_CHAIN"])
             if isinstance(nextFilter, tuple):
                 func = nextFilter[0]
                 args = nextFilter[1]
@@ -101,7 +101,7 @@ class FilterChainProxy(Filter, ApplicationContextAware):
                 for filter in chainOfFilters:
                         try:
                             filterChain.addFilter(self.app_context.get_object(filter))
-                        except AttributeError, e:
+                        except AttributeError as e:
                             filterChain.addFilter(filter)
                 break
 
@@ -239,7 +239,7 @@ class AuthenticationProcessingFilter(Filter):
             self.logger.debug("Trying to authenticate %s using the authentication manager" % token)
             SecurityContextHolder.getContext().authentication = self.auth_manager.authenticate(token)
             self.logger.debug("%s was successfully authenticated, access GRANTED." % token.username)
-        except AuthenticationException, e:
+        except AuthenticationException as e:
             self.logger.debug("Authentication failure, access DENIED.")
             raise
 
@@ -356,10 +356,10 @@ class ExceptionTranslationFilter(Filter):
     def __call__(self, environ, start_response):
         try:
             return self.doNextFilter(environ, start_response)
-        except AuthenticationException, e:
+        except AuthenticationException as e:
             self.logger.debug("AuthenticationException => %s, redirecting through authenticationEntryPoint" % e)
             return self.authenticationEntryPoint(environ, start_response)
-        except AccessDeniedException, e:
+        except AccessDeniedException as e:
             self.logger.debug("AccessDeniedException => %s, redirect through accessDeniedHandler" % e)
             return self.accessDeniedHandler(environ, start_response)
 
@@ -415,5 +415,5 @@ class MiddlewareFilter(Filter):
             self.__dict__[name] = value
 
     def __call__(self, environ, start_response):
-        setattr(self.middleware, self.appAttribute, environ["SPRINGPYTHON_FILTER_CHAIN"].next())
+        setattr(self.middleware, self.appAttribute, next(environ["SPRINGPYTHON_FILTER_CHAIN"]))
         return self.middleware(environ, start_response)

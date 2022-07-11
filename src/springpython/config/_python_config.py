@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from __future__ import absolute_import
 try:
     import cElementTree as etree
 except ImportError:
@@ -26,9 +27,9 @@ import types
 import inspect
 import logging
 
-from _config_base import *
+from ._config_base import *
 from springpython.context import scope
-from decorator import decorator, partial
+from .decorator import decorator, partial
 from springpython.context import ApplicationContextAware
 from springpython.factory import PythonObjectFactory
 from springpython.factory import ReflectiveObjectFactory
@@ -50,14 +51,14 @@ class PythonConfig(Config, ApplicationContextAware):
         for name, method in inspect.getmembers(self, inspect.ismethod):
             if name not in _pythonConfigMethods:
                 try:
-                    wrapper = method.im_func.func_globals["_call_"]
+                    wrapper = method.__func__.__globals__["_call_"]
 
-                    if wrapper.func_name.startswith("object"):
+                    if wrapper.__name__.startswith("object"):
                         c = ObjectDef(id=name, factory=PythonObjectFactory(method, wrapper),
                                 scope=wrapper.scope, lazy_init=wrapper.lazy_init,
                                 abstract=wrapper.abstract, parent=wrapper.parent)
                         objects.append(c)
-                except KeyError, e:
+                except KeyError as e:
                     pass
         self.logger.debug("==============================================================")
         return objects
@@ -66,7 +67,7 @@ class PythonConfig(Config, ApplicationContextAware):
         super(PythonConfig, self).set_app_context(app_context)
         try:
             _object_context[(self,)]["container"] = app_context
-        except KeyError, e:
+        except KeyError as e:
             _object_context[(self,)] = {"container": app_context}
 
 
@@ -89,7 +90,7 @@ def _object_wrapper(f, scope, parent, log_func_name, *args, **kwargs):
     def _deco(f, scope, parent, log_func_name, *args, **kwargs):
         log = logging.getLogger("springpython.config.%s%s - %s%s" % (log_func_name,
                                     f, str(args), scope))
-        if f.func_name != top_func:
+        if f.__name__ != top_func:
             log.debug("This is NOT the top-level object %s, deferring to container." % top_func)
             container = _object_context[args]["container"]
             log.debug("Container = %s" % container)
@@ -97,10 +98,10 @@ def _object_wrapper(f, scope, parent, log_func_name, *args, **kwargs):
             if parent:
                 parent_result = container.get_object(parent, ignore_abstract=True)
                 log.debug("This IS the top-level object, calling %s(%s)" \
-                           % (f.func_name, parent_result))
-                results = container.get_object(f.func_name)(parent_result)
+                           % (f.__name__, parent_result))
+                results = container.get_object(f.__name__)(parent_result)
             else:
-                results = container.get_object(f.func_name)
+                results = container.get_object(f.__name__)
 
             log.debug("Found %s inside the container" % results)
             return results
@@ -109,10 +110,10 @@ def _object_wrapper(f, scope, parent, log_func_name, *args, **kwargs):
                 container = _object_context[(args[0],)]["container"]
                 parent_result = container.get_object(parent, ignore_abstract=True)
                 log.debug("This IS the top-level object, calling %s(%s)" \
-                           % (f.func_name, parent_result))
+                           % (f.__name__, parent_result))
                 results = f(container, parent_result)
             else:
-                log.debug("This IS the top-level object, calling %s()." % f.func_name)
+                log.debug("This IS the top-level object, calling %s()." % f.__name__)
                 results = f(*args, **kwargs)
 
             log.debug("Found %s" % results)

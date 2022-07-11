@@ -1036,7 +1036,7 @@ class YamlConfigTypesCustomizing(unittest.TestCase):
         # Will raise KeyError: 'class'
         try:
             ApplicationContext(YamlConfig("support/contextYamlBuiltinTypesErrorNoTypeDefined.yaml"))
-        except KeyError, e:
+        except KeyError as e:
             # Meaning there was no 'class' key found.
             self.assertEqual(e.message, "class")
         else:
@@ -1534,7 +1534,7 @@ class AppContextObjectsObjectsDefsTestCase(MockTestCase):
             return Bar()
             
         # A reference to the function wrapping the actual 'foo' function.
-        foo_wrapper = foo.func_globals["_call_"]
+        foo_wrapper = foo.__globals__["_call_"]
         
         # Create an object definition, note that we're telling to return
         foo_object_def = ObjectDef(id="foo",
@@ -1542,7 +1542,7 @@ class AppContextObjectsObjectsDefsTestCase(MockTestCase):
             lazy_init=foo_wrapper.lazy_init)
         
         # A reference to the function wrapping the actual 'bar' function.
-        bar_wrapper = foo.func_globals["_call_"]
+        bar_wrapper = foo.__globals__["_call_"]
         
         bar_object_def = ObjectDef(id="foo",
             factory=PythonObjectFactory(bar, bar_wrapper), scope=SINGLETON,
@@ -1999,6 +1999,6 @@ class InvalidScopeContainingContext(PythonConfig):
         _globals["Object"] = Object
         
         def should_raise_invalid_object_scope():
-            exec invalid in _globals, _locals
+            exec(invalid, _globals, _locals)
             
         self.assertRaises(InvalidObjectScope, should_raise_invalid_object_scope)

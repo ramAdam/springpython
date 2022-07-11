@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from __future__ import absolute_import
 
 try:
     import cElementTree as etree
@@ -27,7 +28,7 @@ import types
 import inspect
 import logging
 
-from _config_base import *
+from ._config_base import *
 from springpython.context import scope
 from springpython.context import ApplicationContextAware
 from springpython.factory import PythonObjectFactory

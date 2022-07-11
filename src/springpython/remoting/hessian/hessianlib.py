@@ -1,3 +1,4 @@
+from __future__ import print_function
 #
 # A Hessian client interface for Python.  The date and long types require
 # Python 2.2 or later.
@@ -58,6 +59,7 @@
 # Credits: hessianlib.py was inspired and partially based on
 # xmlrpclib.py created by Fredrik Lundh at www.pythonware.org
 #
+from future.utils import raise_
 import string, time
 import urllib
 from types import *
@@ -184,7 +186,7 @@ class HessianWriter:
 	try:
 	    f = self.dispatch[type(value)]
 	except KeyError:
-	    raise TypeError, "cannot write %s objects" % type(value)
+	    raise_(TypeError, "cannot write %s objects" % type(value))
 	else:
 	    f(self, value)
 
@@ -213,7 +215,7 @@ class HessianWriter:
         # check for and write circular references
         # returns 1 if the object should be written, i.e. not a reference
 	i = id(value)
-	if self.refs.has_key(i):
+	if i in self.refs:
 	    self.write('R')
 	    self.write(pack(">L", self.refs[i]))
 	    return 0
@@ -413,7 +415,7 @@ class Hessian:
 	# get the uri
 	type, uri = urllib.splittype(url)
 	if type != "http":
-	    raise IOError, "unsupported Hessian protocol"
+	    raise IOError("unsupported Hessian protocol")
 
 	self._host, self._uri = urllib.splithost(uri)
 
@@ -476,6 +478,6 @@ if __name__ == "__main__":
     proxy = Hessian("http://hessian.caucho.com/test/test")
 
     try:
-	print proxy.hello()
-    except Error, v:
-	print "ERROR", v
+	print(proxy.hello())
+    except Error as v:
+	print("ERROR", v)

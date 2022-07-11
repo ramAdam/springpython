@@ -147,7 +147,7 @@ class TransactionTemplate(DefaultTransactionDefinition):
             self.logger.debug("Execute the steps inside the transaction")
             result = transactionCallback.do_in_transaction(status)
             self.tx_manager.commit(status)
-        except Exception, e:
+        except Exception as e:
             self.logger.debug("Exception: (%s)" % e)
             self.tx_manager.rollback(status)
             raise e
@@ -211,7 +211,7 @@ class TransactionalInterceptor(MethodInterceptor):
         self.logger.debug("Call TransactionTemplate")
         try:
             results = tx_template.execute(tx_def())
-        except Exception, e:
+        except Exception as e:
             self.logger.debug("Exception => %s" % e)
             raise e
         self.logger.debug("Return from TransactionTemplate")
@@ -299,11 +299,11 @@ class AutoTransactionalObject(ObjectPostProcessor):
         for name, method in inspect.getmembers(obj, inspect.ismethod):
             try:
                 # If the method contains _call_, then you are looking at a wrapper...
-                wrapper = method.im_func.func_globals["_call_"]
-                if wrapper.func_name == "transactional_wrapper":  # name of @transactional's wrapper method
+                wrapper = method.__func__.__globals__["_call_"]
+                if wrapper.__name__ == "transactional_wrapper":  # name of @transactional's wrapper method
                     self.logger.debug("Linking tx_manager with %s" % name)
-                    wrapper.func_globals["tx_manager"] = self.tx_manager
-            except KeyError, e:   # If the method is NOT wrapped, there will be no _call_ attribute
+                    wrapper.__globals__["tx_manager"] = self.tx_manager
+            except KeyError as e:   # If the method is NOT wrapped, there will be no _call_ attribute
                 pass
         return obj
 

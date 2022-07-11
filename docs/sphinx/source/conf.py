@@ -11,6 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from __future__ import print_function
 import sys, os
 
 # Read the properties file to harvest version info.
@@ -22,7 +23,7 @@ with open("../../../springpython.properties") as f:
             (key, value) = line.split("=")
             p[key] = value[:-1]
 
-print p
+print(p)
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

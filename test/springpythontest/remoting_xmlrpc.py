@@ -174,7 +174,7 @@ class TestInitDefaultArguments(unittest.TestCase):
         _locals = {}
         _globals = {}
 
-        exec "from springpython.remoting.xmlrpc import *" in _locals, _globals
+        exec("from springpython.remoting.xmlrpc import *", _locals, _globals)
 
         self.assertEqual(len(_globals), 3)
         self.assertEqual(sorted(_globals), ["SSLClient", "SSLServer", "VerificationException"])

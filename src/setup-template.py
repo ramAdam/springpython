@@ -14,6 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from __future__ import print_function
 import re
 import sys
 
@@ -23,7 +24,7 @@ except ImportError:
     from setuptools import setup
 
 if sys.version_info < (2, 6):
-    print "Spring Python only supports Python 2.6 and higher"
+    print("Spring Python only supports Python 2.6 and higher")
     sys.exit(1)
 
 setup(name='springpython',

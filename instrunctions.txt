@@ -1,0 +1,10 @@
+build package:
+python build.py --package
+
+#setup file exists in src folder
+
+install module:
+pip install src/
+
+after making changes to the source, rebuild and pip install src
+in the working python env.

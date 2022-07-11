@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.       
 """
+from __future__ import print_function
 import logging
 import os
 import sys
@@ -288,7 +289,7 @@ class DatabaseTemplateMockTestCase(MockTestCase):
         self.mock.expects(once()).method("execute").id("#1")
         self.mock.expects(once()).method("fetchall").will(return_value([(4,)])).id("#2").after("#1")
 
-        count = self.databaseTemplate.query_for_object("select count(*) from animal", required_type=types.IntType)
+        count = self.databaseTemplate.query_for_object("select count(*) from animal", required_type=int)
         self.assertEquals(count, 4)
         
     def testProgrammaticQueryForLongWithBoundVariables(self):
@@ -297,19 +298,19 @@ class DatabaseTemplateMockTestCase(MockTestCase):
         self.mock.expects(once()).method("execute").id("#3").after("#2")
         self.mock.expects(once()).method("fetchall").will(return_value([(1,)])).id("#4").after("#3")
 
-        count = self.databaseTemplate.query_for_object("select count(*) from animal where name = %s", ("snake",), types.IntType)
+        count = self.databaseTemplate.query_for_object("select count(*) from animal where name = %s", ("snake",), int)
         self.assertEquals(count, 1)
 
-        count = self.databaseTemplate.query_for_object("select count(*) from animal where name = ?", ("snake",), types.IntType)
+        count = self.databaseTemplate.query_for_object("select count(*) from animal where name = ?", ("snake",), int)
         self.assertEquals(count, 1)
         
     def testProgrammaticStaticQueryForObject(self):
-        self.assertRaises(ArgumentMustBeNamed, self.databaseTemplate.query_for_object, "select name from animal where category = 'reptile'", types.StringType)
+        self.assertRaises(ArgumentMustBeNamed, self.databaseTemplate.query_for_object, "select name from animal where category = 'reptile'", bytes)
 
         self.mock.expects(once()).method("execute").id("#1")
         self.mock.expects(once()).method("fetchall").will(return_value([("snake",)])).id("#2").after("#1")
 
-        name = self.databaseTemplate.query_for_object("select name from animal where category = 'reptile'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where category = 'reptile'", required_type=bytes)
         self.assertEquals(name, "snake")
         
     def testProgrammaticQueryForObjectWithBoundVariables(self):
@@ -318,10 +319,10 @@ class DatabaseTemplateMockTestCase(MockTestCase):
         self.mock.expects(once()).method("execute").id("#3").after("#2")
         self.mock.expects(once()).method("fetchall").will(return_value([("snake",)])).id("#4").after("#3")
 
-        name = self.databaseTemplate.query_for_object("select name from animal where category = %s", ("reptile",), types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where category = %s", ("reptile",), bytes)
         self.assertEquals(name, "snake")
 
-        name = self.databaseTemplate.query_for_object("select name from animal where category = ?", ("reptile",), types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where category = ?", ("reptile",), bytes)
         self.assertEquals(name, "snake")
         
     def testProgrammaticStaticUpdate(self):
@@ -333,7 +334,7 @@ class DatabaseTemplateMockTestCase(MockTestCase):
         rows = self.databaseTemplate.update("UPDATE animal SET name = 'python' WHERE name = 'snake'")
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=bytes)
         self.assertEquals(name, "python")
         
     def testProgrammaticUpdateWithBoundVariables(self):
@@ -348,13 +349,13 @@ class DatabaseTemplateMockTestCase(MockTestCase):
         rows = self.databaseTemplate.update("UPDATE animal SET name = ? WHERE category = ?", ("python", "reptile"))
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=bytes)
         self.assertEquals(name, "python")
 
         rows = self.databaseTemplate.update("UPDATE animal SET name = ? WHERE category = %s", ("coily", "reptile"))
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=bytes)
         self.assertEquals(name, "coily")
 
     def testProgrammaticStaticInsert(self):
@@ -366,7 +367,7 @@ class DatabaseTemplateMockTestCase(MockTestCase):
         rows = self.databaseTemplate.execute ("INSERT INTO animal (name, category, population) VALUES ('black mamba', 'kill_bill_viper', 1)")
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=bytes)
         self.assertEquals(name, "black mamba")
 
     def testProgrammaticStaticInsertWithInsertApi(self):
@@ -378,7 +379,7 @@ class DatabaseTemplateMockTestCase(MockTestCase):
         id = self.databaseTemplate.insert_and_return_id("INSERT INTO animal (name, category, population) VALUES ('black mamba', 'kill_bill_viper', 1)")
         self.assertEquals(id, 42)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=bytes)
         self.assertEquals(name, "black mamba")
         
     def testProgrammaticInsertWithBoundVariables(self):
@@ -393,13 +394,13 @@ class DatabaseTemplateMockTestCase(MockTestCase):
         rows = self.databaseTemplate.execute ("INSERT INTO animal (name, category, population) VALUES (?, ?, ?)", ('black mamba', 'kill_bill_viper', 1))
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=bytes)
         self.assertEquals(name, "black mamba")
 
         rows = self.databaseTemplate.execute("INSERT INTO animal (name, category, population) VALUES (%s, %s, %s)", ('cottonmouth', 'kill_bill_viper', 1))
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("select name from animal where name = 'cottonmouth'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where name = 'cottonmouth'", required_type=bytes)
         self.assertEquals(name, "cottonmouth")
 
     def testProgrammaticInsertWithBoundVariablesWithInsertApi(self):
@@ -414,13 +415,13 @@ class DatabaseTemplateMockTestCase(MockTestCase):
         id = self.databaseTemplate.insert_and_return_id ("INSERT INTO animal (name, category, population) VALUES (?, ?, ?)", ('black mamba', 'kill_bill_viper', 1))
         self.assertEquals(id, 42)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=bytes)
         self.assertEquals(name, "black mamba")
 
         id = self.databaseTemplate.insert_and_return_id("INSERT INTO animal (name, category, population) VALUES (%s, %s, %s)", ('cottonmouth', 'kill_bill_viper', 1))
         self.assertEquals(id, 42)
 
-        name = self.databaseTemplate.query_for_object("select name from animal where name = 'cottonmouth'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where name = 'cottonmouth'", required_type=bytes)
         self.assertEquals(name, "cottonmouth")
 
 class AbstractDatabaseTemplateTestCase(unittest.TestCase):
@@ -552,36 +553,36 @@ class AbstractDatabaseTemplateTestCase(unittest.TestCase):
         self.assertEquals(count, 1)
         
     def testProgrammaticStaticQueryForObject(self):
-        self.assertRaises(ArgumentMustBeNamed, self.databaseTemplate.query_for_object, "select name from animal where category = 'reptile'", types.StringType)
+        self.assertRaises(ArgumentMustBeNamed, self.databaseTemplate.query_for_object, "select name from animal where category = 'reptile'", bytes)
 
-        name = self.databaseTemplate.query_for_object("select name from animal where category = 'reptile'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where category = 'reptile'", required_type=bytes)
         self.assertEquals(name, "snake")
         
     def testProgrammaticQueryForObjectWithBoundVariables(self):
-        name = self.databaseTemplate.query_for_object("select name from animal where category = %s", ("reptile",), types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where category = %s", ("reptile",), bytes)
         self.assertEquals(name, "snake")
 
-        name = self.databaseTemplate.query_for_object("select name from animal where category = ?", ("reptile",), types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where category = ?", ("reptile",), bytes)
         self.assertEquals(name, "snake")
         
     def testProgrammaticStaticUpdate(self):
         rows = self.databaseTemplate.update("UPDATE animal SET name = 'python' WHERE name = 'snake'")
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=bytes)
         self.assertEquals(name, "python")
         
     def testProgrammaticUpdateWithBoundVariables(self):
         rows = self.databaseTemplate.update("UPDATE animal SET name = ? WHERE category = ?", ("python", "reptile"))
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=bytes)
         self.assertEquals(name, "python")
 
         rows = self.databaseTemplate.update("UPDATE animal SET name = ? WHERE category = %s", ("coily", "reptile"))
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'reptile'", required_type=bytes)
         self.assertEquals(name, "coily")
 
     def testProgrammaticStaticInsert(self):
@@ -589,7 +590,7 @@ class AbstractDatabaseTemplateTestCase(unittest.TestCase):
         rows = self.databaseTemplate.execute("INSERT INTO animal (name, category, population) VALUES ('black mamba', 'kill_bill_viper', 1)")
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=bytes)
         self.assertEquals(name, "black mamba")
 
     def testProgrammaticStaticInsertWithInsertApi(self):
@@ -597,7 +598,7 @@ class AbstractDatabaseTemplateTestCase(unittest.TestCase):
         id = self.databaseTemplate.insert_and_return_id("INSERT INTO animal (name, category, population) VALUES ('black mamba', 'kill_bill_viper', 1)")
         self.assertEquals(id, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=bytes)
         self.assertEquals(name, "black mamba")
         
     def testProgrammaticInsertWithBoundVariables(self):
@@ -605,13 +606,13 @@ class AbstractDatabaseTemplateTestCase(unittest.TestCase):
         rows = self.databaseTemplate.execute("INSERT INTO animal (name, category, population) VALUES (?, ?, ?)", ('black mamba', 'kill_bill_viper', 1))
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=bytes)
         self.assertEquals(name, "black mamba")
 
         rows = self.databaseTemplate.execute("INSERT INTO animal (name, category, population) VALUES (%s, %s, %s)", ('cottonmouth', 'kill_bill_viper', 1))
         self.assertEquals(rows, 1)
 
-        name = self.databaseTemplate.query_for_object("select name from animal where name = 'cottonmouth'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where name = 'cottonmouth'", required_type=bytes)
         self.assertEquals(name, "cottonmouth")
 
     def testProgrammaticInsertWithBoundVariablesWithInsertApi(self):
@@ -619,13 +620,13 @@ class AbstractDatabaseTemplateTestCase(unittest.TestCase):
         id = self.databaseTemplate.insert_and_return_id("INSERT INTO animal (name, category, population) VALUES (?, ?, ?)", ('black mamba', 'kill_bill_viper', 1))
         self.assertEquals(id, 1)
 
-        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("SELECT name FROM animal WHERE category = 'kill_bill_viper'", required_type=bytes)
         self.assertEquals(name, "black mamba")
 
         id = self.databaseTemplate.insert_and_return_id("INSERT INTO animal (name, category, population) VALUES (%s, %s, %s)", ('cottonmouth', 'kill_bill_viper', 1))
         self.assertEquals(id, 2)
 
-        name = self.databaseTemplate.query_for_object("select name from animal where name = 'cottonmouth'", required_type=types.StringType)
+        name = self.databaseTemplate.query_for_object("select name from animal where name = 'cottonmouth'", required_type=bytes)
         self.assertEquals(name, "cottonmouth")
 
 class MySQLDatabaseTemplateTestCase(AbstractDatabaseTemplateTestCase):
@@ -648,7 +649,7 @@ class MySQLDatabaseTemplateTestCase(AbstractDatabaseTemplateTestCase):
             """)
             self.factory.commit()
 
-        except Exception, e:
+        except Exception as e:
             print("""
                 !!! Can't run MySQLDatabaseTemplateTestCase !!!
 
@@ -707,7 +708,7 @@ class PostGreSQLDatabaseTemplateTestCase(AbstractDatabaseTemplateTestCase):
             """)
             self.factory.commit()
 
-        except Exception, e:
+        except Exception as e:
             print("""
                 !!! Can't run PostGreSQLDatabaseTemplateTestCase !!!
 
@@ -764,7 +765,7 @@ class SqliteDatabaseTemplateTestCase(AbstractDatabaseTemplateTestCase):
             """)
             self.factory.commit()
 
-        except Exception, e:
+        except Exception as e:
             print("""
                 !!! Can't run SqliteDatabaseTemplateTestCase !!!
             """)
@@ -879,7 +880,7 @@ class SQLServerDatabaseTemplateTestCase(AbstractDatabaseTemplateTestCase):
             
             self.factory.commit()
 
-        except Exception, e:
+        except Exception as e:
             print("""
                 !!! Can't run SQLServerDatabaseTemplateTestCase !!!
 

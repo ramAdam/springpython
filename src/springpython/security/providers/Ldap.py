@@ -13,10 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.       
 """
+from __future__ import absolute_import
 import sys
 
 if "java" in sys.platform.lower():
-    from _Ldap_jython import *
+    from ._Ldap_jython import *
 else:
-    from _Ldap_cpython import *
+    from ._Ldap_cpython import *
 

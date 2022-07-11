@@ -13,13 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+from __future__ import absolute_import
 import re
 import types
 import inspect
 import logging
 
 from springpython.context import scope
-from decorator import decorator, partial
+from .decorator import decorator, partial
 from springpython.context import ApplicationContextAware
 from springpython.factory import PythonObjectFactory
 from springpython.factory import ReflectiveObjectFactory

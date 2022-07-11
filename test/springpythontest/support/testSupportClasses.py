@@ -197,7 +197,7 @@ class StubConnection(object):
     
 class StubDBFactory(ConnectionFactory):
     def __init__(self):
-        ConnectionFactory.__init__(self, [types.TupleType])
+        ConnectionFactory.__init__(self, [tuple])
         self.stubConnection = StubConnection()
     def connect(self):
         return self.stubConnection
@@ -244,7 +244,7 @@ class Bank(object):
         return amount
 
     def balance(self, account_num):
-        return self.dt.query_for_object("SELECT balance FROM account WHERE account_num = ?", (account_num,), types.FloatType)
+        return self.dt.query_for_object("SELECT balance FROM account WHERE account_num = ?", (account_num,), float)
 
     def transfer(self, amount, from_account, to_account):
         self.logger.debug("Transferring $%s from %s to %s." % (amount, from_account, to_account))
@@ -319,7 +319,7 @@ class TransactionalBank(object):
         return amount
 
     def balance(self, account_num):
-        return self.dt.query_for_object("SELECT balance FROM account WHERE account_num = ?", (account_num,), types.FloatType)
+        return self.dt.query_for_object("SELECT balance FROM account WHERE account_num = ?", (account_num,), float)
 
     @transactional()
     def transfer(self, amount, from_account, to_account):
@@ -371,7 +371,7 @@ class TransactionalBankWithNoTransactionalArguments(object):
         return amount
 
     def balance(self, account_num):
-        return self.dt.query_for_object("SELECT balance FROM account WHERE account_num = ?", (account_num,), types.FloatType)
+        return self.dt.query_for_object("SELECT balance FROM account WHERE account_num = ?", (account_num,), float)
 
     @transactional
     def transfer(self, amount, from_account, to_account):
@@ -428,7 +428,7 @@ class TransactionalBankWithLotsOfTransactionalArguments(object):
     @transactional(["PROPAGATION_SUPPORTS","readOnly"])
     def balance(self, account_num):
         self.logger.debug("Checking balance for %s" % account_num)
-        return self.dt.query_for_object("SELECT balance FROM account WHERE account_num = ?", (account_num,), types.FloatType)
+        return self.dt.query_for_object("SELECT balance FROM account WHERE account_num = ?", (account_num,), float)
 
     @transactional(["PROPAGATION_REQUIRED"])
     def transfer(self, amount, from_account, to_account):

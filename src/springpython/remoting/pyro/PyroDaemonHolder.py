@@ -63,7 +63,8 @@ def deregister(service_name, host, port):
     pyro_threads[(host, port)].pyro_daemon.disconnect(serviceList[(service_name, host, port)])
     del(serviceList[(service_name, host, port)])
 
-    def get_address((service_name, host, port)):
+    def get_address(xxx_todo_changeme):
+        (service_name, host, port) = xxx_todo_changeme
         return (host, port)
 
     if len([True for x in serviceList.keys() if get_address(x) == (host, port)]) == 0:

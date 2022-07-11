@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.       
 """
+from __future__ import print_function
 import os
 import re
 import termios
@@ -27,7 +28,7 @@ def tryMySQL():
     try:
         import MySQLdb
     except:
-        print "You don't appear to have MySQLdb module."
+        print("You don't appear to have MySQLdb module.")
         raise NotImplementedError("Can't setup the database")
     
     useGetPass = True
@@ -35,8 +36,8 @@ def tryMySQL():
         if useGetPass:
             try:
                 password = getpass("Mysql 'root' password: ")
-            except termios.error, e:
-                print "Okay, we can't use that mechanism to ask for your password."
+            except termios.error as e:
+                print("Okay, we can't use that mechanism to ask for your password.")
                 useGetPass = False
                 password = raw_input("Mysql 'root' password: ")
         else:
@@ -48,9 +49,9 @@ def tryMySQL():
             del(connection)
             break
         except:
-            print "!!! Bad password!"
+            print("!!! Bad password!")
             if i >= 3:
-                print "!!! Failed all attempts to connection to the database>"
+                print("!!! Failed all attempts to connection to the database>")
                 return None
 
     subprocess.Popen([r"mysql","-uroot", "-p%s" % password],
@@ -80,10 +81,10 @@ def setupDatabase():
                          if line.strip() != ""]:
         databaseTemplate.execute(sqlStatement)
         
-    print "+++ Database is setup."
+    print("+++ Database is setup.")
     
 def main():
-    print "+++ Setting up the Spring Python demo application 'petclinic'"
+    print("+++ Setting up the Spring Python demo application 'petclinic'")
     
     setupDatabase()
 

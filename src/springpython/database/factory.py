@@ -62,7 +62,7 @@ class ConnectionFactory(object):
 
 class MySQLConnectionFactory(ConnectionFactory):
     def __init__(self, username = None, password = None, hostname = None, db = None):
-        ConnectionFactory.__init__(self, [types.TupleType])
+        ConnectionFactory.__init__(self, [tuple])
         self.username = username
         self.password = password
         self.hostname = hostname
@@ -77,11 +77,11 @@ class MySQLConnectionFactory(ConnectionFactory):
         return True
 
     def count_type(self):
-        return types.LongType
+        return int
 
 class PgdbConnectionFactory(ConnectionFactory):
     def __init__(self, user = None, password = None, host = None, database = None):
-        ConnectionFactory.__init__(self, [types.TupleType])
+        ConnectionFactory.__init__(self, [tuple])
         self.user = user
         self.password = password
         self.host = host
@@ -96,11 +96,11 @@ class PgdbConnectionFactory(ConnectionFactory):
         return True
 
     def count_type(self):
-        return types.LongType
+        return int
 
 class Sqlite3ConnectionFactory(ConnectionFactory):
     def __init__(self, db = None, check_same_thread=True):
-        ConnectionFactory.__init__(self, [types.TupleType])
+        ConnectionFactory.__init__(self, [tuple])
         self.db = db
         self.check_same_thread = check_same_thread
         self.using_sqlite3 = True
@@ -119,7 +119,7 @@ class Sqlite3ConnectionFactory(ConnectionFactory):
         return True
 
     def count_type(self):
-        return types.IntType
+        return int
 
     def convert_sql_binding(self, sql_query):
         if self.using_sqlite3:
@@ -131,7 +131,7 @@ class Sqlite3ConnectionFactory(ConnectionFactory):
 
 class cxoraConnectionFactory(ConnectionFactory):
     def __init__(self, username = None, password = None, hostname = None, db = None):
-        ConnectionFactory.__init__(self, [types.DictType])
+        ConnectionFactory.__init__(self, [dict])
         self.username = username
         self.password = password
         self.hostname = hostname
@@ -144,7 +144,7 @@ class cxoraConnectionFactory(ConnectionFactory):
         
 class SQLServerConnectionFactory(ConnectionFactory):
     def __init__(self, **odbc_info):
-        ConnectionFactory.__init__(self, [types.TupleType])
+        ConnectionFactory.__init__(self, [tuple])
         self.odbc_info = odbc_info
 
     def connect(self):
@@ -157,7 +157,7 @@ class SQLServerConnectionFactory(ConnectionFactory):
         return True
         
     def count_type(self):
-        return types.IntType
+        return int
         
     def convert_sql_binding(self, sql_query):
         """SQL Server expects parameters to be passed as question marks."""

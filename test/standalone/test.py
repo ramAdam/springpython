@@ -1,3 +1,4 @@
+from __future__ import print_function
 ################################
 # This stand-alone script is used to exercise the LDAP APIs. The intent is to get things working, and then
 # replace this with an effective unit test.
@@ -20,16 +21,16 @@ authProvider2 = LdapAuthenticationProvider(ldap_authenticator=passwordAuthentica
 
 authentication = UsernamePasswordAuthenticationToken(username="bob", password="bobspassword")
 
-print "Input = %s" % authentication
+print("Input = %s" % authentication)
 
 auth1 = authProvider.authenticate(authentication)
 
-print "Bind output = %s" % auth1
+print("Bind output = %s" % auth1)
 
 
-print "Input = %s" % authentication
+print("Input = %s" % authentication)
 
 auth2 = authProvider2.authenticate(authentication)
 
-print "PasswordComparison output = %s" % auth2
+print("PasswordComparison output = %s" % auth2)
 

@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.       
 """
+from future.utils import raise_
 from springpython.remoting.hessian.hessianlib import Hessian
 
 class HessianProxyFactory(object):
@@ -34,7 +35,7 @@ class HessianProxyFactory(object):
         if name == "service_url":
             return self.service_url
         elif name in ["post_process_before_initialization", "post_process_after_initialization"]:
-            raise AttributeError, name
+            raise_(AttributeError, name)
         else:
             if self.client_proxy is None:
                 self.__dict__["client_proxy"] = Hessian(self.service_url)

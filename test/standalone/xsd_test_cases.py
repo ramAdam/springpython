@@ -67,7 +67,7 @@ class XSDTestCase(unittest.TestCase):
             
             try:
                 schema.assert_(doc)
-            except Exception, e:
+            except Exception as e:
                 logging.error("Exception in assert_, xml=[%s] e=[%s]" % (xml, e))
                 raise
                 

@@ -118,7 +118,7 @@ class SSLServer(object, SimpleXMLRPCServer):
                     sock.close()
                     return False
 
-        except Exception, e:
+        except Exception as e:
 
             # It was either an error on our side or the client didn't send the
             # certificate even though self.cert_reqs was CERT_OPTIONAL (it couldn't

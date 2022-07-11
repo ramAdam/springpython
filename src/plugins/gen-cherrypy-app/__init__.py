@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.       
 """
+from __future__ import print_function
 import re
 import os
 import shutil
@@ -21,7 +22,7 @@ __description__ = "plugin to create skeleton CherryPy applications"
 
 def create(plugin_path, name):
     if not os.path.exists(name):
-        print "Creating CherryPy skeleton app %s" % name
+        print("Creating CherryPy skeleton app %s" % name)
         os.makedirs(name)
 
         # Copy/transform the template files
@@ -44,5 +45,5 @@ def create(plugin_path, name):
         # Recursively copy other parts
         shutil.copytree(plugin_path + "/images", name + "/" + "images")
     else:
-        print "There is already something called %s. ABORT!" % name
+        print("There is already something called %s. ABORT!" % name)
 

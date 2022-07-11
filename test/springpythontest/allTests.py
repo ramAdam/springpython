@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.       
 """
+from __future__ import print_function
 import logging
 import unittest, os
 import springpython
@@ -20,10 +21,10 @@ import sys
 
 if __name__ == "__main__":    
     module_name = sys.argv[1]
-    print "Trying to import module %s" % module_name
+    print("Trying to import module %s" % module_name)
     mod = __import__("%s" % module_name)
 
-    print mod
+    print(mod)
 
     logger = logging.getLogger("springpython")
     loggingLevel = logging.INFO
